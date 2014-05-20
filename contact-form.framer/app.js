@@ -3,6 +3,10 @@ contactForm = Framer.Importer.load("imported/contact-form")
 /*
  * Initialise all values
  */
+contactForm.button.style = {cursor:"pointer"}
+contactForm.sendButton.style = {cursor:"pointer"}
+contactForm.closeButton.style = {cursor:"pointer"}
+
 contactForm.form.scale = 0
 contactForm.name.properties = {opacity:0, y:contactForm.name.y-10}
 contactForm.email.properties = {opacity:0, y:contactForm.email.y-10}
@@ -14,7 +18,7 @@ contactForm.sent.opacity = 0
 /*
  * Open form when cliking on contact button
  */
-contactForm.button.on(Events.Click, function(event, layer) {
+openForm = contactForm.button.on(Events.Click, function(event, layer) {
 
 	// Hide contact button
 	contactForm.button.visible = false
@@ -50,6 +54,46 @@ contactForm.button.on(Events.Click, function(event, layer) {
 		delay: 0.2,
 		time: 0.5,
 		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+	})
+
+})
+
+/*
+ * Close form when cliking on close button
+ */
+contactForm.closeButton.on(Events.Click, function(event, layer) {
+
+	// Hide all fields
+	contactForm.name.animate({
+		properties: {opacity:0, y:contactForm.name.y-10},
+		time: 0.5,
+		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+	})
+	contactForm.email.animate({
+		properties: {opacity:0, y:contactForm.email.y-10},
+		time: 0.5,
+		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+	})
+	contactForm.message.animate({
+		properties: {opacity:0, y:contactForm.message.y-10},
+		time: 0.5,
+		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+	})
+	contactForm.sendButton.animate({
+		properties: {opacity:0, y:contactForm.sendButton.y+10},
+		time: 0.5,
+		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+	})
+
+	// Show contact button
+	contactForm.button.visible = true
+
+	// Close empty form box
+	contactForm.form.animate({
+		properties: {scale:0},
+		delay: 0.5,
+		time: 0.5,
+		curve: "cubic-bezier(0.19, 1, 0.22, 1)"
 	})
 
 })
@@ -91,19 +135,32 @@ contactForm.sendButton.on(Events.Click, function(event, layer) {
 		// When sent animation is finished
 		sent.on('end', function(){
 
+			// Show contact button
 			contactForm.button.visible = true
 
-			contactForm.form.animate({
-				properties: {x:-500},
+			// Contact form desappear
+			desepear = contactForm.form.animate({
+				properties: {x:contactForm.form.x-500},
 				delay: 1,
 				time: 0.5,
 				curve: "cubic-bezier(0.68, -0.35, 0.265, 1.55)"
 			})
 
+			// Reinitialize all values so that we can start again without reloading the page
+			desepear.on('end', function(){
+				contactForm.form.x = contactForm.form.x+500
+				contactForm.form.scale = 0
+				contactForm.name.properties = {opacity:0, y:contactForm.name.y-10}
+				contactForm.email.properties = {opacity:0, y:contactForm.email.y-10}
+				contactForm.message.properties = {opacity:0, y:contactForm.message.y-10}
+				contactForm.sendButton.properties = {opacity:0, y:contactForm.sendButton.y+10}
+				contactForm.default.visible = true
+				contactForm.sending.properties = {opacity:0, rotation:0}
+				contactForm.sent.opacity = 0
+			})
+
 		})
 
 	})
-
-
 
 })
