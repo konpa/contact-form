@@ -1,6 +1,6 @@
 contactForm = Framer.Importer.load("imported/contact-form")
 
-contactForm.button.center()
+contactForm.page.center()
 contactForm.form.center()
 
 /*
@@ -10,11 +10,11 @@ contactForm.button.style = {cursor:"pointer"}
 contactForm.sendButton.style = {cursor:"pointer"}
 contactForm.closeButton.style = {cursor:"pointer"}
 
-contactForm.form.scale = 0
-contactForm.name.properties = {opacity:0, y:contactForm.name.y-10}
-contactForm.email.properties = {opacity:0, y:contactForm.email.y-10}
-contactForm.message.properties = {opacity:0, y:contactForm.message.y-10}
-contactForm.sendButton.properties = {opacity:0, y:contactForm.sendButton.y+10}
+contactForm.form.properties = {scale:0, y:(contactForm.form.y+130)}
+contactForm.name.properties = {opacity:0, y:(contactForm.name.y-10)}
+contactForm.email.properties = {opacity:0, y:(contactForm.email.y-10)}
+contactForm.message.properties = {opacity:0, y:(contactForm.message.y-10)}
+contactForm.sendButton.properties = {opacity:0, y:(contactForm.sendButton.y+10)}
 contactForm.sending.opacity = 0
 contactForm.sent.opacity = 0
 
@@ -26,9 +26,18 @@ openForm = contactForm.button.on(Events.Click, function(event, layer) {
 	// Hide contact button
 	contactForm.button.visible = false
 
-	// Open empty form box
+	// Open empty form box with fog
+  fog = new Layer({x:0, y:0, width:5000, height:5000, backgroundColor:"#000", opacity:0})
+  fog.center()
+  fog.placeBehind(contactForm.form)
+
+  fog.animate({
+    properties: {opacity:0.3},
+    time: 0.3
+  })
+
 	contactForm.form.animate({
-		properties: {scale:1.0},
+		properties: {scale:1.0, y:(contactForm.form.y-130)},
 		time: 0.5,
 		curve: "cubic-bezier(0.19, 1, 0.22, 1)"
 	})
@@ -68,36 +77,53 @@ contactForm.closeButton.on(Events.Click, function(event, layer) {
 
 	// Hide all fields
 	contactForm.name.animate({
-		properties: {opacity:0, y:contactForm.name.y-10},
+		properties: {opacity:0, y:(contactForm.name.y-10)},
 		time: 0.5,
 		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
 	})
 	contactForm.email.animate({
-		properties: {opacity:0, y:contactForm.email.y-10},
+		properties: {opacity:0, y:(contactForm.email.y-10)},
 		time: 0.5,
 		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
 	})
 	contactForm.message.animate({
-		properties: {opacity:0, y:contactForm.message.y-10},
+		properties: {opacity:0, y:(contactForm.message.y-10)},
 		time: 0.5,
 		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
 	})
 	contactForm.sendButton.animate({
-		properties: {opacity:0, y:contactForm.sendButton.y+10},
+		properties: {opacity:0, y:(contactForm.sendButton.y+10)},
 		time: 0.5,
 		curve: "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
 	})
 
 	// Show contact button
 	contactForm.button.visible = true
+  contactForm.value.opacity = 0
 
 	// Close empty form box
 	contactForm.form.animate({
-		properties: {scale:0},
+		properties: {scale:0, y:(contactForm.form.y+130)},
 		delay: 0.5,
 		time: 0.5,
 		curve: "cubic-bezier(0.19, 1, 0.22, 1)"
 	})
+
+  contactForm.value.animate({
+    properties: {opacity:1},
+    delay: 0.5,
+    time: 0.3
+  })
+
+  // Remove fog
+  unfog = fog.animate({
+    properties: {opacity: 0},
+    time: 0.5
+  })
+
+  unfog.on("end", function(){
+    fog.destroy()
+  })
 
 })
 
@@ -134,7 +160,7 @@ contactForm.sendButton.on(Events.Click, function(event, layer) {
 			properties: {opacity:1.0},
 			time: 0.5
 		})
-		
+
 		// When sent animation is finished
 		sent.on('end', function(){
 
@@ -151,8 +177,18 @@ contactForm.sendButton.on(Events.Click, function(event, layer) {
 
 			// Reinitialize all values so that we can start again without reloading the page
 			desepear.on('end', function(){
+        // Remove fog
+        unfog = fog.animate({
+          properties: {opacity: 0},
+          time: 0.3
+        })
+
+        unfog.on("end", function(){
+          fog.destroy()
+        })
+
 				contactForm.form.y = contactForm.form.y-1000
-				contactForm.form.scale = 0
+				contactForm.form.properties = {scale:0, y:(contactForm.form.y+130)}
 				contactForm.name.properties = {opacity:0, y:contactForm.name.y-10}
 				contactForm.email.properties = {opacity:0, y:contactForm.email.y-10}
 				contactForm.message.properties = {opacity:0, y:contactForm.message.y-10}
