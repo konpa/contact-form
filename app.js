@@ -1,5 +1,8 @@
 contactForm = Framer.Importer.load("imported/contact-form")
 
+contactForm.button.center()
+contactForm.form.center()
+
 /*
  * Initialise all values
  */
@@ -140,7 +143,7 @@ contactForm.sendButton.on(Events.Click, function(event, layer) {
 
 			// Contact form desappear
 			desepear = contactForm.form.animate({
-				properties: {x:contactForm.form.x-500},
+				properties: {y:contactForm.form.y+1000},
 				delay: 1,
 				time: 0.5,
 				curve: "cubic-bezier(0.68, -0.35, 0.265, 1.55)"
@@ -148,7 +151,7 @@ contactForm.sendButton.on(Events.Click, function(event, layer) {
 
 			// Reinitialize all values so that we can start again without reloading the page
 			desepear.on('end', function(){
-				contactForm.form.x = contactForm.form.x+500
+				contactForm.form.y = contactForm.form.y-1000
 				contactForm.form.scale = 0
 				contactForm.name.properties = {opacity:0, y:contactForm.name.y-10}
 				contactForm.email.properties = {opacity:0, y:contactForm.email.y-10}
