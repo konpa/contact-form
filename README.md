@@ -1,4 +1,4 @@
-contact-form
+contact-form prototype
 ============
 
-Contact form with angularjs &amp; laravel
+contact-form prototype made with [framer.js](http://framerjs.com/index.html)
